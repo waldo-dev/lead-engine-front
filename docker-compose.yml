@@ -1,0 +1,13 @@
+services:
+  lead-engine-front:
+    container_name: lead-engine-front
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # URL que el navegador usará para llamar al API (puerto 5008 en la VPS).
+        # Ejemplo: http://203.0.113.10:5008  o  https://api.tudominio.com
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:?Define NEXT_PUBLIC_API_URL en .env}
+    ports:
+      - "${FRONT_PORT:-3000}:3000"
+    restart: unless-stopped
