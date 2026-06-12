@@ -22,6 +22,8 @@ export const companyService = {
         q: params?.search || undefined,
         take: limit,
         skip: (page - 1) * limit,
+        onlyBanned: params?.onlyBanned || undefined,
+        includeBanned: params?.includeBanned || undefined,
       },
     });
 
@@ -72,5 +74,20 @@ export const companyService = {
 
   async delete(id: string): Promise<void> {
     await api.delete(`/companies/${id}`);
+  },
+
+  async ban(id: string, reason?: string): Promise<Company> {
+    const { data } = await api.post<{ company: Parameters<typeof mapCompany>[0] }>(
+      `/companies/${id}/ban`,
+      { reason: reason || undefined },
+    );
+    return mapCompany(data.company);
+  },
+
+  async unban(id: string): Promise<Company> {
+    const { data } = await api.post<{ company: Parameters<typeof mapCompany>[0] }>(
+      `/companies/${id}/unban`,
+    );
+    return mapCompany(data.company);
   },
 };

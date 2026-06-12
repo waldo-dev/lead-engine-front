@@ -28,12 +28,12 @@ export function CompanyFilters({ filters, onChange }: CompanyFiltersProps) {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center lg:justify-end">
       <Select
         value={filters.analysisStatus ?? "all"}
         onValueChange={(v) => update("analysisStatus", v)}
       >
-        <SelectTrigger className="w-[150px]">
+        <SelectTrigger className="w-full min-w-0 sm:w-[9.5rem]">
           <SelectValue placeholder="Análisis" />
         </SelectTrigger>
         <SelectContent>
@@ -49,7 +49,7 @@ export function CompanyFilters({ filters, onChange }: CompanyFiltersProps) {
         value={filters.processingStatus ?? "all"}
         onValueChange={(v) => update("processingStatus", v)}
       >
-        <SelectTrigger className="w-[160px]">
+        <SelectTrigger className="w-full min-w-0 sm:w-[10rem]">
           <SelectValue placeholder="Procesamiento" />
         </SelectTrigger>
         <SelectContent>
@@ -65,7 +65,7 @@ export function CompanyFilters({ filters, onChange }: CompanyFiltersProps) {
         value={filters.contactStatus ?? "all"}
         onValueChange={(v) => update("contactStatus", v)}
       >
-        <SelectTrigger className="w-[150px]">
+        <SelectTrigger className="w-full min-w-0 sm:w-[9.5rem]">
           <SelectValue placeholder="Contacto" />
         </SelectTrigger>
         <SelectContent>
@@ -82,7 +82,7 @@ export function CompanyFilters({ filters, onChange }: CompanyFiltersProps) {
         value={filters.sortBy ?? "createdAt"}
         onValueChange={(v) => update("sortBy", v)}
       >
-        <SelectTrigger className="w-[140px]">
+        <SelectTrigger className="w-full min-w-0 sm:w-[8.75rem]">
           <SelectValue placeholder="Ordenar" />
         </SelectTrigger>
         <SelectContent>
@@ -97,7 +97,7 @@ export function CompanyFilters({ filters, onChange }: CompanyFiltersProps) {
         value={filters.sortOrder ?? "desc"}
         onValueChange={(v) => update("sortOrder", v as "asc" | "desc")}
       >
-        <SelectTrigger className="w-[120px]">
+        <SelectTrigger className="w-full min-w-0 sm:w-[7.5rem]">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

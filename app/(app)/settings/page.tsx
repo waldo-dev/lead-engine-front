@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Save } from "lucide-react";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -19,12 +20,10 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Configuración</h1>
-        <p className="text-sm text-muted-foreground">
-          Ajustes generales de la plataforma
-        </p>
-      </div>
+      <PageHeader
+        title="Ajustes"
+        description="Preferencias y conexión con el backend de Lead Engine"
+      />
 
       <Card>
         <CardHeader>
@@ -55,11 +54,12 @@ export default function SettingsPage() {
           <CardTitle>Endpoints disponibles</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm font-mono text-muted-foreground">
-          <p>POST /auth/register · POST /auth/login · GET /auth/me</p>
+          <p>POST /auth/register · POST /auth/login · POST /auth/logout · GET /auth/me</p>
           <Separator />
           <p>GET/POST /companies · GET/PATCH/DELETE /companies/:id</p>
+          <p>POST /companies/:id/ban · POST /companies/:id/unban</p>
           <Separator />
-          <p>POST /scraping/import · GET /scraping/stats</p>
+          <p>POST /scraping/import · POST /scraping/run · GET /scraping/stats</p>
           <Separator />
           <p>POST /ai/analyze-company/:id · POST /ai/analyze-pending</p>
           <p>GET /ai/company-analysis/:id · GET /ai/briefing/:id</p>

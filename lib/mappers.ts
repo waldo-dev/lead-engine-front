@@ -41,6 +41,9 @@ type BackendCompany = {
   painPoints?: string | null;
   idealSolution?: string | null;
   source?: string | null;
+  isBanned?: boolean;
+  bannedAt?: string | null;
+  banReason?: string | null;
   createdAt: string;
   updatedAt?: string;
 };
@@ -56,6 +59,18 @@ type BackendScrapingStats = {
   totals: { imported: number; duplicated: number; failed: number };
   byIndustry: { industry: string; count: number }[];
   pendingAi: number;
+  activeRun?: {
+    id: string;
+    status: string;
+    searchQuery?: string | null;
+    location?: string | null;
+    provider?: string | null;
+    fetched: number;
+    imported: number;
+    duplicated: number;
+    failed: number;
+    createdAt: string;
+  } | null;
 };
 
 export function mapUser(user: BackendUser): User {
@@ -116,6 +131,9 @@ export function mapCompany(company: BackendCompany): Company {
     aiScore: company.score ?? undefined,
     createdAt: company.createdAt,
     updatedAt: company.updatedAt,
+    isBanned: company.isBanned ?? false,
+    bannedAt: company.bannedAt ?? undefined,
+    banReason: company.banReason ?? undefined,
     contacts: {
       phones: company.phone ? [company.phone] : [],
       emails: company.email ? [company.email] : [],
@@ -168,11 +186,12 @@ export function mapScrapingStats(stats: BackendScrapingStats): ScrapingStats {
 
   return {
     pending,
-    processing: 0,
+    processing: stats.activeRun?.status === "running" ? 1 : 0,
     analyzed,
     failed,
     total,
     queue: [],
+    activeRun: stats.activeRun ?? null,
   };
 }
 
@@ -253,7 +272,7 @@ export function mapPresalesBriefing(raw: Record<string, unknown>): PresalesBrief
     estimatedTicket: {
       minUsd: Number(ticket.minUsd ?? 0),
       maxUsd: Number(ticket.maxUsd ?? 0),
-      currency: String(ticket.currency ?? "USD"),
+      currency: String(ticket.currency ?? "CLP"),
       rationale: String(ticket.rationale ?? ""),
     },
     recommendedServices: Array.isArray(raw.recommendedServices)

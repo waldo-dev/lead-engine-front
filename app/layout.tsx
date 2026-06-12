@@ -1,21 +1,23 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, IBM_Plex_Mono } from "next/font/google";
 import { AppProviders } from "@/components/providers/AppProviders";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const sans = Plus_Jakarta_Sans({
+  variable: "--font-sans-app",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const mono = IBM_Plex_Mono({
+  variable: "--font-mono-app",
   subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "Lead Engine — CRM Interno",
-  description: "Plataforma interna para gestión de leads y análisis comercial con IA",
+  title: "Lead Engine — Chilsmart",
+  description: "CRM interno para prospección, análisis comercial y seguimiento de oportunidades",
 };
 
 export default function RootLayout({
@@ -24,11 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full">
+    <html lang="es" className={`${sans.variable} ${mono.variable} h-full`}>
+      <body className="min-h-full font-sans antialiased">
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

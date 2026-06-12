@@ -1,6 +1,7 @@
 "use client";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authService } from "@/services/auth.service";
 import { useAuthStore } from "@/stores/auth.store";
 
@@ -39,5 +40,20 @@ export function useRegister() {
       name: string;
     }) => authService.register(email, password, name),
     onSuccess: (data) => setAuth(data.user, data.token),
+  });
+}
+
+export function useLogout() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const logout = useAuthStore((s) => s.logout);
+
+  return useMutation({
+    mutationFn: () => authService.logout(),
+    onSettled: () => {
+      queryClient.clear();
+      logout();
+      router.push("/login");
+    },
   });
 }

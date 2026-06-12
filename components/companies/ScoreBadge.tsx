@@ -6,15 +6,15 @@ interface ScoreBadgeProps {
 }
 
 function getScoreColor(score: number) {
-  if (score >= 75) return "text-emerald-600 dark:text-emerald-400";
-  if (score >= 50) return "text-amber-600 dark:text-amber-400";
-  return "text-red-600 dark:text-red-400";
+  if (score >= 75) return "text-success";
+  if (score >= 50) return "text-warning";
+  return "text-destructive";
 }
 
 function getScoreRing(score: number) {
-  if (score >= 75) return "stroke-emerald-500";
-  if (score >= 50) return "stroke-amber-500";
-  return "stroke-red-500";
+  if (score >= 75) return "stroke-success";
+  if (score >= 50) return "stroke-warning";
+  return "stroke-destructive";
 }
 
 export function ScoreBadge({ score, size = "sm" }: ScoreBadgeProps) {
@@ -38,7 +38,7 @@ export function ScoreBadge({ score, size = "sm" }: ScoreBadgeProps) {
           fill="none"
           stroke="currentColor"
           strokeWidth={3}
-          className="text-muted/30"
+          className="text-muted/40"
         />
         <circle
           cx={dim / 2}
@@ -54,11 +54,11 @@ export function ScoreBadge({ score, size = "sm" }: ScoreBadgeProps) {
       </svg>
       <span
         className={cn(
-          "absolute font-semibold",
+          "absolute font-semibold tabular-nums",
           getScoreColor(score),
           size === "sm" && "text-[10px]",
           size === "md" && "text-sm",
-          size === "lg" && "text-lg"
+          size === "lg" && "text-lg",
         )}
       >
         {score}

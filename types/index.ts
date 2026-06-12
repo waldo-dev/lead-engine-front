@@ -144,6 +144,9 @@ export interface Company {
   error?: string;
   errorReason?: string;
   lastAttemptAt?: string;
+  isBanned?: boolean;
+  bannedAt?: string;
+  banReason?: string;
 }
 
 export interface CompaniesQueryParams {
@@ -159,6 +162,8 @@ export interface CompaniesQueryParams {
   sortOrder?: "asc" | "desc";
   minScore?: number;
   maxScore?: number;
+  onlyBanned?: boolean;
+  includeBanned?: boolean;
 }
 
 export interface PaginatedResponse<T> {
@@ -169,6 +174,19 @@ export interface PaginatedResponse<T> {
   totalPages: number;
 }
 
+export interface ScrapingActiveRun {
+  id: string;
+  status: string;
+  searchQuery?: string | null;
+  location?: string | null;
+  provider?: string | null;
+  fetched: number;
+  imported: number;
+  duplicated: number;
+  failed: number;
+  createdAt: string;
+}
+
 export interface ScrapingStats {
   pending: number;
   processing: number;
@@ -176,6 +194,7 @@ export interface ScrapingStats {
   failed: number;
   total: number;
   queue: QueueItem[];
+  activeRun?: ScrapingActiveRun | null;
 }
 
 export interface QueueItem {

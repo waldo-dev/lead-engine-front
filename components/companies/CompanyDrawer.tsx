@@ -1,11 +1,13 @@
 "use client";
 
-import { ExternalLink, Globe, MapPin, RefreshCw } from "lucide-react";
+import { useState } from "react";
+import { Ban, ExternalLink, Globe, MapPin, RefreshCw, ShieldOff } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { CompanyAnalysis } from "@/components/companies/CompanyAnalysis";
 import { ContactCard } from "@/components/companies/ContactCard";
 import { StatusBadge } from "@/components/companies/StatusBadge";
@@ -13,6 +15,7 @@ import { ScoreBadge } from "@/components/companies/ScoreBadge";
 import { CommercialBriefingView } from "@/components/commercial/CommercialBriefingView";
 import { CommercialEditForm } from "@/components/commercial/CommercialEditForm";
 import { FollowupTimeline } from "@/components/commercial/FollowupTimeline";
+import { useBanCompany, useUnbanCompany } from "@/hooks/useCompanies";
 import { useAnalyzeCompany } from "@/hooks/useAnalysis";
 import { useCommercialTracking } from "@/hooks/useCommercial";
 import { formatDateTime } from "@/lib/utils";
@@ -26,9 +29,12 @@ interface CompanyDrawerProps {
 }
 
 export function CompanyDrawer({ company, open, onClose }: CompanyDrawerProps) {
+  const [banReason, setBanReason] = useState("");
   const companyId = open && company ? company.id : null;
   const { data: commercial, isLoading, refetch } = useCommercialTracking(companyId);
   const analyzeCompany = useAnalyzeCompany();
+  const banCompany = useBanCompany();
+  const unbanCompany = useUnbanCompany();
 
   if (!company) return null;
 
@@ -43,6 +49,30 @@ export function CompanyDrawer({ company, open, onClose }: CompanyDrawerProps) {
       refetch();
     } catch {
       toast.error("Error al generar briefing");
+    }
+  };
+
+  const handleBan = async () => {
+    try {
+      await banCompany.mutateAsync({
+        id: company.id,
+        reason: banReason.trim() || undefined,
+      });
+      toast.success("Empresa excluida del sistema");
+      setBanReason("");
+      onClose();
+    } catch {
+      toast.error("No se pudo excluir la empresa");
+    }
+  };
+
+  const handleUnban = async () => {
+    try {
+      await unbanCompany.mutateAsync(company.id);
+      toast.success("Empresa restaurada");
+      refetch();
+    } catch {
+      toast.error("No se pudo restaurar la empresa");
     }
   };
 
@@ -167,6 +197,56 @@ export function CompanyDrawer({ company, open, onClose }: CompanyDrawerProps) {
             <Separator />
 
             {companyId && <FollowupTimeline companyId={companyId} />}
+
+            <Separator />
+
+            <section>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Exclusión
+              </h3>
+              {company.isBanned ? (
+                <div className="space-y-3 rounded-lg border border-destructive/30 bg-destructive/5 p-4">
+                  <p className="text-sm text-destructive">
+                    Esta empresa está excluida y no aparece en búsquedas ni análisis.
+                  </p>
+                  {company.banReason && (
+                    <p className="text-sm text-muted-foreground">
+                      Motivo: {company.banReason}
+                    </p>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleUnban}
+                    disabled={unbanCompany.isPending}
+                  >
+                    <ShieldOff className="h-4 w-4" />
+                    Restaurar empresa
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3 rounded-lg border p-4">
+                  <p className="text-sm text-muted-foreground">
+                    Excluye empresas que bloquearon contacto o no deben aparecer en el CRM.
+                  </p>
+                  <Textarea
+                    value={banReason}
+                    onChange={(e) => setBanReason(e.target.value)}
+                    placeholder="Motivo (opcional): nos bloqueó en Instagram..."
+                    rows={2}
+                  />
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleBan}
+                    disabled={banCompany.isPending}
+                  >
+                    <Ban className="h-4 w-4" />
+                    Excluir empresa
+                  </Button>
+                </div>
+              )}
+            </section>
 
             <Separator />
 

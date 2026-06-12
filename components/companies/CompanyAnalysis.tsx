@@ -8,7 +8,7 @@ import {
   Lightbulb,
   MessageCircle,
   Shield,
-  Sparkles,
+  FileText,
   Target,
   TrendingUp,
   UserRound,
@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScoreBadge } from "@/components/companies/ScoreBadge";
 import { CommercialPriorityBadge } from "@/components/companies/CommercialPriorityBadge";
 import { LoadingSkeleton } from "@/components/shared/LoadingSkeleton";
+import { formatTicketRange } from "@/lib/currency";
 import type { AnalysisMeta, PresalesBriefing, ServicePriority } from "@/types";
 
 const servicePriorityLabels: Record<ServicePriority, string> = {
@@ -32,12 +33,6 @@ const servicePriorityVariant: Record<ServicePriority, "default" | "secondary" | 
   secondary: "secondary",
   optional: "outline",
 };
-
-function formatTicket(min: number, max: number, currency: string) {
-  const fmt = (n: number) =>
-    n.toLocaleString("en-US", { style: "currency", currency, maximumFractionDigits: 0 });
-  return `${fmt(min)} – ${fmt(max)}`;
-}
 
 interface CompanyAnalysisProps {
   briefing?: PresalesBriefing | null;
@@ -58,7 +53,7 @@ export function CompanyAnalysis({
     return (
       <Card>
         <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-          <Sparkles className="h-8 w-8 text-muted-foreground" />
+          <FileText className="h-8 w-8 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">
             Sin briefing de preventa. Usa &quot;Procesar&quot; para generar el análisis consultivo.
           </p>
@@ -104,19 +99,18 @@ export function CompanyAnalysis({
         <Card className="flex flex-col items-center justify-center py-4 px-2 text-center">
           <p className="mb-2 text-xs text-muted-foreground">Ticket estimado</p>
           <span className="text-xs font-semibold leading-tight">
-            {formatTicket(
+            {formatTicketRange(
               briefing.estimatedTicket.minUsd,
               briefing.estimatedTicket.maxUsd,
-              briefing.estimatedTicket.currency
             )}
           </span>
         </Card>
       </div>
 
-      <Card className="border-amber-500/20 bg-amber-500/5">
+      <Card className="border-warning/30 bg-warning-muted/50">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-base">
-            <AlertTriangle className="h-4 w-4 text-amber-500" />
+            <AlertTriangle className="h-4 w-4 text-warning" />
             Problema detectado
           </CardTitle>
         </CardHeader>
@@ -125,10 +119,10 @@ export function CompanyAnalysis({
         </CardContent>
       </Card>
 
-      <Card className="border-emerald-500/20 bg-emerald-500/5">
+      <Card className="border-success/30 bg-success-muted/50">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-base">
-            <TrendingUp className="h-4 w-4 text-emerald-500" />
+            <TrendingUp className="h-4 w-4 text-success" />
             Impacto estimado
           </CardTitle>
         </CardHeader>
@@ -156,7 +150,7 @@ export function CompanyAnalysis({
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
+              <AlertTriangle className="h-4 w-4 text-warning" />
               Pain points
             </CardTitle>
           </CardHeader>
@@ -164,7 +158,7 @@ export function CompanyAnalysis({
             <ul className="space-y-1.5">
               {briefing.painPoints.map((point) => (
                 <li key={point} className="flex items-start gap-2 text-sm">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-warning" />
                   {point}
                 </li>
               ))}
@@ -175,7 +169,7 @@ export function CompanyAnalysis({
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Lightbulb className="h-4 w-4 text-emerald-500" />
+              <Lightbulb className="h-4 w-4 text-success" />
               Oportunidades
             </CardTitle>
           </CardHeader>
@@ -183,7 +177,7 @@ export function CompanyAnalysis({
             <ul className="space-y-1.5">
               {briefing.opportunities.map((opp) => (
                 <li key={opp} className="flex items-start gap-2 text-sm">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-success" />
                   {opp}
                 </li>
               ))}
@@ -306,10 +300,9 @@ export function CompanyAnalysis({
         </CardHeader>
         <CardContent>
           <p className="text-lg font-semibold">
-            {formatTicket(
+            {formatTicketRange(
               briefing.estimatedTicket.minUsd,
               briefing.estimatedTicket.maxUsd,
-              briefing.estimatedTicket.currency
             )}
           </p>
           <p className="mt-1 text-sm text-muted-foreground">{briefing.estimatedTicket.rationale}</p>

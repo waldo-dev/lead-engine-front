@@ -76,7 +76,7 @@ function mapEffective(raw: Record<string, unknown>): EffectiveBriefing {
     estimatedTicket: {
       minUsd: ticket.minUsd != null ? Number(ticket.minUsd) : null,
       maxUsd: ticket.maxUsd != null ? Number(ticket.maxUsd) : null,
-      currency: String(ticket.currency ?? "USD"),
+      currency: String(ticket.currency ?? "CLP"),
     },
     recommendedServices: mapRecommendedServices(raw.recommendedServices),
     likelyObjections: mapLikelyObjections(raw.likelyObjections),

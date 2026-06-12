@@ -51,3 +51,28 @@ export function useDeleteCompany() {
     },
   });
 }
+
+export function useBanCompany() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason?: string }) =>
+      companyService.ban(id, reason),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: companyKeys.lists() });
+      queryClient.setQueryData(companyKeys.detail(data.id), data);
+    },
+  });
+}
+
+export function useUnbanCompany() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => companyService.unban(id),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: companyKeys.lists() });
+      queryClient.setQueryData(companyKeys.detail(data.id), data);
+    },
+  });
+}

@@ -28,4 +28,8 @@ export const authService = {
     const { data } = await api.get<{ user: AuthPayload["user"] }>("/auth/me");
     return mapUser(data.user);
   },
+
+  async logout(): Promise<void> {
+    await api.post("/auth/logout");
+  },
 };

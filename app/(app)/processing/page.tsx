@@ -1,25 +1,23 @@
 "use client";
 
-import { Download, RefreshCw } from "lucide-react";
+import { useCallback, useState } from "react";
+import { RefreshCw, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageHeader } from "@/components/shared/PageHeader";
+import { ScrapingRunForm } from "@/components/processing/ScrapingRunForm";
 import { ProcessingProgress } from "@/components/processing/ProcessingProgress";
-import { useScrapingStats, useImportScraping } from "@/hooks/useScraping";
+import { useScrapingStats } from "@/hooks/useScraping";
 import { useAnalyzePending } from "@/hooks/useAnalysis";
 import { toast } from "sonner";
 
 export default function ProcessingPage() {
-  const { data, isLoading, isError, refetch } = useScrapingStats();
-  const importScraping = useImportScraping();
+  const [searchFormOpen, setSearchFormOpen] = useState(false);
+  const { data, isLoading, isError, refetch } = useScrapingStats({ pollWhileActive: true });
   const analyzePending = useAnalyzePending();
-
-  const handleImport = async () => {
-    try {
-      const result = await importScraping.mutateAsync();
-      toast.success(`${result.imported} empresas importadas`);
-    } catch {
-      toast.error("Error al importar desde scraping");
-    }
-  };
+  const handleRunFinished = useCallback(() => {
+    refetch();
+  }, [refetch]);
 
   const handleProcessPending = async () => {
     try {
@@ -32,28 +30,36 @@ export default function ProcessingPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Procesamiento</h1>
-          <p className="text-sm text-muted-foreground">
-            Estado en tiempo real del pipeline de análisis IA
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={handleImport}
-            disabled={importScraping.isPending}
-          >
-            <Download className={`h-4 w-4 ${importScraping.isPending ? "animate-pulse" : ""}`} />
-            Importar scraping
-          </Button>
+      <PageHeader
+        title="Procesamiento"
+        description="Importa leads desde Apify, controla cuotas diarias y ejecuta el análisis comercial"
+        actions={
           <Button onClick={handleProcessPending} disabled={analyzePending.isPending}>
             <RefreshCw className={`h-4 w-4 ${analyzePending.isPending ? "animate-spin" : ""}`} />
             Procesar pendientes
           </Button>
-        </div>
-      </div>
+        }
+      />
+
+      {searchFormOpen ? (
+        <ScrapingRunForm enabled onRunFinished={handleRunFinished} />
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Búsqueda de leads (Apify)</CardTitle>
+            <CardDescription>
+              El scraping no se ejecuta automáticamente. Solo corre cuando tú defines la búsqueda y
+              confirmas explícitamente.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => setSearchFormOpen(true)}>
+              <Search className="h-4 w-4" />
+              Iniciar búsqueda manual
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       <ProcessingProgress
         stats={data}

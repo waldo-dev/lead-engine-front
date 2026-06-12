@@ -1,7 +1,8 @@
 "use client";
 
-import { RefreshCw } from "lucide-react";
+import { CheckCircle2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { CompanyCard } from "@/components/companies/CompanyCard";
 import { CompanyDrawer } from "@/components/companies/CompanyDrawer";
 import { LoadingSkeleton } from "@/components/shared/LoadingSkeleton";
@@ -54,31 +55,37 @@ export default function FailedPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Fallidas</h1>
-          <p className="text-sm text-muted-foreground">
-            {companies.length} empresas con errores de procesamiento
-          </p>
-        </div>
-        {selectedIds.length > 0 && (
-          <Button onClick={handleBatchRetry} disabled={analyzeCompany.isPending}>
-            <RefreshCw className={`h-4 w-4 ${analyzeCompany.isPending ? "animate-spin" : ""}`} />
-            Reintentar ({selectedIds.length})
-          </Button>
-        )}
-      </div>
+      <PageHeader
+        title="Con errores"
+        description={`${companies.length} empresas con fallos en el análisis`}
+        actions={
+          selectedIds.length > 0 ? (
+            <Button
+              onClick={handleBatchRetry}
+              disabled={analyzeCompany.isPending}
+              className="px-3 sm:px-4"
+            >
+              <RefreshCw
+                className={`h-4 w-4 shrink-0 ${analyzeCompany.isPending ? "animate-spin" : ""}`}
+              />
+              <span className="hidden sm:inline">Reintentar </span>
+              <span className="tabular-nums">({selectedIds.length})</span>
+              <span className="sr-only sm:hidden"> empresas seleccionadas</span>
+            </Button>
+          ) : undefined
+        }
+      />
 
       {companies.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <RefreshCw className="mb-4 h-10 w-10 text-emerald-500" />
+        <div className="flex flex-col items-center justify-center rounded-xl border border-border/80 bg-card py-20 text-center shadow-[var(--shadow-soft)]">
+          <CheckCircle2 className="mb-4 h-10 w-10 text-success" />
           <h3 className="font-semibold">Sin errores</h3>
           <p className="mt-1 text-sm text-muted-foreground">
             Todas las empresas se procesaron correctamente.
           </p>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {companies.map((company) => (
             <CompanyCard
               key={company.id}

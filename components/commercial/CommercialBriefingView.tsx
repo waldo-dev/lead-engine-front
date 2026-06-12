@@ -13,15 +13,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CommercialPriorityBadge } from "@/components/companies/CommercialPriorityBadge";
+import { formatTicketRange } from "@/lib/currency";
 import type { EffectiveBriefing, SellerOverrides } from "@/types/commercial";
-
-function formatTicket(min: number | null, max: number | null, currency: string) {
-  if (min == null && max == null) return "—";
-  const fmt = (n: number) =>
-    n.toLocaleString("en-US", { style: "currency", currency, maximumFractionDigits: 0 });
-  if (min != null && max != null) return `${fmt(min)} – ${fmt(max)}`;
-  return min != null ? fmt(min) : max != null ? fmt(max) : "—";
-}
 
 const sourceLabels = {
   ai: "Solo IA",
@@ -86,8 +79,6 @@ export function CommercialBriefingView({
     mode === "effective" ? data!.estimatedTicket.minUsd : sellerOverrides?.ticketMinUsd;
   const ticketMax =
     mode === "effective" ? data!.estimatedTicket.maxUsd : sellerOverrides?.ticketMaxUsd;
-  const currency =
-    mode === "effective" ? data!.estimatedTicket.currency : "USD";
   const nextAction = sellerOverrides?.nextAction;
   const nextActionDue = sellerOverrides?.nextActionDueDate;
   const internalNotes = sellerOverrides?.internalNotes;
@@ -118,10 +109,10 @@ export function CommercialBriefingView({
       )}
 
       {problem && (
-        <Card className="border-amber-500/20 bg-amber-500/5">
+        <Card className="border-warning/30 bg-warning-muted/50">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-sm">
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
+              <AlertTriangle className="h-4 w-4 text-warning" />
               Problema detectado
             </CardTitle>
           </CardHeader>
@@ -135,7 +126,7 @@ export function CommercialBriefingView({
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-sm">
-              <TrendingUp className="h-4 w-4 text-emerald-500" />
+              <TrendingUp className="h-4 w-4 text-success" />
               Impacto estimado
             </CardTitle>
           </CardHeader>
@@ -183,7 +174,9 @@ export function CommercialBriefingView({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="font-semibold">{formatTicket(ticketMin ?? null, ticketMax ?? null, currency)}</p>
+            <p className="font-semibold leading-snug break-words">
+              {formatTicketRange(ticketMin, ticketMax)}
+            </p>
           </CardContent>
         </Card>
       )}

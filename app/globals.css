@@ -1,51 +1,76 @@
 @import "tailwindcss";
 
+/* Lead Engine — paleta Chilsmart: blanco, azul y azul oscuro */
 :root {
-  --background: #fafafa;
-  --foreground: #09090b;
+  --background: #f5f8fc;
+  --foreground: #0c1929;
   --card: #ffffff;
-  --card-foreground: #09090b;
+  --card-foreground: #0c1929;
   --popover: #ffffff;
-  --popover-foreground: #09090b;
-  --primary: #6366f1;
+  --popover-foreground: #0c1929;
+  --primary: #1d5fd4;
   --primary-foreground: #ffffff;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #18181b;
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
-  --accent: #f4f4f5;
-  --accent-foreground: #18181b;
-  --destructive: #ef4444;
+  --secondary: #e8eef6;
+  --secondary-foreground: #1a3352;
+  --muted: #eef3f9;
+  --muted-foreground: #5a6d85;
+  --accent: #e3edfb;
+  --accent-foreground: #1a4a8a;
+  --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: #e4e4e7;
-  --input: #e4e4e7;
-  --ring: #6366f1;
-  --sidebar: #ffffff;
-  --radius: 0.625rem;
+  --success: #15803d;
+  --success-foreground: #f0fdf4;
+  --success-muted: #dcfce7;
+  --warning: #d97706;
+  --warning-foreground: #fffbeb;
+  --warning-muted: #fef3c7;
+  --info: #1d5fd4;
+  --info-foreground: #eff6ff;
+  --info-muted: #dbeafe;
+  --border: #d5e0ed;
+  --input: #d5e0ed;
+  --ring: #1d5fd4;
+  --sidebar: #0c1929;
+  --sidebar-foreground: #eef4fb;
+  --sidebar-accent: #1a3352;
+  --radius: 0.75rem;
+  --shadow-soft: 0 1px 2px rgb(12 25 41 / 0.04), 0 4px 16px rgb(12 25 41 / 0.06);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #09090b;
-    --foreground: #fafafa;
-    --card: #18181b;
-    --card-foreground: #fafafa;
-    --popover: #18181b;
-    --popover-foreground: #fafafa;
-    --primary: #818cf8;
-    --primary-foreground: #09090b;
-    --secondary: #27272a;
-    --secondary-foreground: #fafafa;
-    --muted: #27272a;
-    --muted-foreground: #a1a1aa;
-    --accent: #27272a;
-    --accent-foreground: #fafafa;
-    --destructive: #dc2626;
-    --destructive-foreground: #fafafa;
-    --border: #27272a;
-    --input: #27272a;
-    --ring: #818cf8;
-    --sidebar: #18181b;
+    --background: #0a1220;
+    --foreground: #eef4fb;
+    --card: #111d2e;
+    --card-foreground: #eef4fb;
+    --popover: #111d2e;
+    --popover-foreground: #eef4fb;
+    --primary: #3b82f6;
+    --primary-foreground: #ffffff;
+    --secondary: #1a2940;
+    --secondary-foreground: #eef4fb;
+    --muted: #1a2940;
+    --muted-foreground: #94a8c4;
+    --accent: #152238;
+    --accent-foreground: #93c5fd;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --success: #4ade80;
+    --success-foreground: #052e16;
+    --success-muted: #14532d;
+    --warning: #fbbf24;
+    --warning-foreground: #422006;
+    --warning-muted: #713f12;
+    --info: #60a5fa;
+    --info-foreground: #eff6ff;
+    --info-muted: #1e3a8a;
+    --border: #243652;
+    --input: #243652;
+    --ring: #3b82f6;
+    --sidebar: #0d1524;
+    --sidebar-foreground: #eef4fb;
+    --sidebar-accent: #1a2940;
+    --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.2), 0 8px 24px rgb(0 0 0 / 0.25);
   }
 }
 
@@ -66,16 +91,25 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-muted: var(--success-muted);
+  --color-warning: var(--warning);
+  --color-warning-muted: var(--warning-muted);
+  --color-info: var(--info);
+  --color-info-muted: var(--info-muted);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-sidebar: var(--sidebar);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --font-sans: var(--font-sans-app);
+  --font-mono: var(--font-mono-app);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --shadow-soft: var(--shadow-soft);
 }
 
 * {
@@ -86,4 +120,18 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fondo sutil en área de trabajo */
+.app-shell-bg {
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in srgb, var(--primary) 8%, transparent), transparent),
+    linear-gradient(180deg, color-mix(in srgb, var(--muted) 40%, transparent) 0%, transparent 320px);
+}
+
+/* Auth panel lateral — azul Chilsmart */
+.auth-panel {
+  background: linear-gradient(145deg, #1d5fd4 0%, #0c1929 100%);
 }

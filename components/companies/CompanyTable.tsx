@@ -5,8 +5,9 @@ import {
   Copy,
   ExternalLink,
   Eye,
+  BrainCircuit,
+  Building2,
   RefreshCw,
-  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,6 +17,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { CompanyListCard } from "@/components/companies/CompanyListCard";
 import { StatusBadge } from "@/components/companies/StatusBadge";
 import { ScoreBadge } from "@/components/companies/ScoreBadge";
 import { LoadingSkeleton } from "@/components/shared/LoadingSkeleton";
@@ -73,8 +75,8 @@ export function CompanyTable({
 
   if (companies.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <Sparkles className="mb-4 h-10 w-10 text-muted-foreground" />
+      <div className="flex flex-col items-center justify-center rounded-xl border border-border/80 bg-card py-20 text-center shadow-[var(--shadow-soft)]">
+        <Building2 className="mb-4 h-10 w-10 text-muted-foreground" />
         <h3 className="font-semibold">No hay empresas</h3>
         <p className="mt-1 text-sm text-muted-foreground">
           Ajusta los filtros o importa nuevos leads desde scraping.
@@ -85,7 +87,38 @@ export function CompanyTable({
 
   return (
     <TooltipProvider>
-      <div className="overflow-x-auto rounded-xl border">
+      <div className="space-y-3 md:hidden">
+        <div className="flex items-center justify-between rounded-lg border border-border/80 bg-muted/30 px-3 py-2">
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground">
+            <Checkbox
+              checked={allSelected}
+              onCheckedChange={() =>
+                onSelectAll(allSelected ? [] : companies.map((c) => c.id))
+              }
+            />
+            Seleccionar todas
+          </label>
+          {selectedIds.length > 0 && (
+            <span className="text-xs tabular-nums text-muted-foreground">
+              {selectedIds.length} seleccionada{selectedIds.length !== 1 ? "s" : ""}
+            </span>
+          )}
+        </div>
+        {companies.map((company) => (
+          <CompanyListCard
+            key={company.id}
+            company={company}
+            selected={selectedIds.includes(company.id)}
+            onToggleSelect={onToggleSelect}
+            onView={onView}
+            onProcess={onProcess}
+            onReprocess={onReprocess}
+            onMarkContacted={onMarkContacted}
+          />
+        ))}
+      </div>
+
+      <div className="hidden overflow-x-auto rounded-xl border border-border/80 bg-card shadow-[var(--shadow-soft)] md:block">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b bg-muted/40">
@@ -122,7 +155,9 @@ export function CompanyTable({
                     onCheckedChange={() => onToggleSelect(company.id)}
                   />
                 </td>
-                <td className="px-3 py-2 font-medium">{company.name}</td>
+                <td className="max-w-[12rem] px-3 py-2 font-medium lg:max-w-[16rem]">
+                  <span className="line-clamp-2 break-words">{company.name}</span>
+                </td>
                 <td className="hidden px-3 py-2 text-muted-foreground md:table-cell">
                   {company.industry}
                 </td>
@@ -172,7 +207,7 @@ export function CompanyTable({
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => onProcess(company)}>
-                          <Sparkles className="h-3.5 w-3.5" />
+                          <BrainCircuit className="h-3.5 w-3.5" />
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>Procesar</TooltipContent>

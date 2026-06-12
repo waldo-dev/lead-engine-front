@@ -2,7 +2,8 @@
 
 import { Suspense, useCallback, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { RefreshCw, Sparkles } from "lucide-react";
+import { BrainCircuit, RefreshCw } from "lucide-react";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { CompanyTable } from "@/components/companies/CompanyTable";
 import { CompanyDrawer } from "@/components/companies/CompanyDrawer";
@@ -90,40 +91,42 @@ function CompaniesContent() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Empresas</h1>
-          <p className="text-sm text-muted-foreground">
-            {data?.total ?? 0} empresas en total
-          </p>
-        </div>
-        <div className="flex gap-2">
-          {selectedIds.length > 0 && (
-            <Button variant="outline" onClick={handleBatchProcess}>
-              <Sparkles className="h-4 w-4" />
-              Procesar ({selectedIds.length})
+    <div className="space-y-5">
+      <PageHeader
+        title="Empresas"
+        description={`${data?.total ?? 0} empresas en tu base de prospección`}
+        actions={
+          <>
+            {selectedIds.length > 0 && (
+              <Button variant="outline" onClick={handleBatchProcess} className="px-3 sm:px-4">
+                <BrainCircuit className="h-4 w-4 shrink-0" />
+                <span className="hidden sm:inline">Analizar </span>
+                <span className="tabular-nums">({selectedIds.length})</span>
+                <span className="sr-only sm:hidden"> empresas seleccionadas</span>
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              onClick={() => analyzePending.mutate()}
+              disabled={analyzePending.isPending}
+              className="px-3 sm:px-4"
+            >
+              <RefreshCw className={`h-4 w-4 shrink-0 ${analyzePending.isPending ? "animate-spin" : ""}`} />
+              <span className="hidden min-[400px]:inline">Pendientes</span>
+              <span className="sr-only min-[400px]:hidden">Procesar pendientes</span>
             </Button>
-          )}
-          <Button
-            variant="outline"
-            onClick={() => analyzePending.mutate()}
-            disabled={analyzePending.isPending}
-          >
-            <RefreshCw className={`h-4 w-4 ${analyzePending.isPending ? "animate-spin" : ""}`} />
-            Procesar pendientes
-          </Button>
-        </div>
-      </div>
+          </>
+        }
+      />
 
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <SearchInput
           value={search}
           onChange={(v) => {
             setSearch(v);
             setPage(1);
           }}
-          className="max-w-sm"
+          className="w-full lg:max-w-sm"
         />
         <CompanyFilters filters={filters} onChange={(f) => { setFilters(f); setPage(1); }} />
       </div>
@@ -143,11 +146,11 @@ function CompaniesContent() {
       />
 
       {data && data.totalPages > 1 && (
-        <div className="flex items-center justify-between pt-2">
-          <p className="text-sm text-muted-foreground">
+        <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-center text-sm text-muted-foreground sm:text-left">
             Página {page} de {data.totalPages}
           </p>
-          <div className="flex gap-2">
+          <div className="flex gap-2 sm:justify-end">
             <Button
               variant="outline"
               size="sm"

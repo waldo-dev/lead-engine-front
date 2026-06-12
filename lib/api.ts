@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5008").replace(/\/$/, "");
 
 export const api = axios.create({
   baseURL: API_URL,
@@ -8,6 +8,15 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+  const url = config.url ?? "";
+  const isScrapingRun = url.includes("/scraping/run") && config.method?.toLowerCase() === "post";
+
+  if (isScrapingRun && config.headers?.["X-Scraping-User-Confirmed"] !== "true") {
+    return Promise.reject(
+      new Error("POST /scraping/run bloqueado: requiere confirmación explícita del usuario."),
+    );
+  }
+
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("token");
     if (token) {

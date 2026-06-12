@@ -52,7 +52,7 @@ export function useAnalyzePending() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: companyKeys.lists() });
       queryClient.invalidateQueries({ queryKey: analysisKeys.all });
-      queryClient.invalidateQueries({ queryKey: ["scraping"] });
+      queryClient.invalidateQueries({ queryKey: ["scraping", "stats"] });
     },
   });
 }

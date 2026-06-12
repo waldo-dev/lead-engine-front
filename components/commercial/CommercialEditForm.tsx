@@ -16,6 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUpdateCommercial } from "@/hooks/useCommercial";
 import type { ContactStatus } from "@/types";
 import type { SellerOverrides, UpdateCommercialPayload } from "@/types/commercial";
+import { clpInputValue, clpToTicketStorage } from "@/lib/currency";
 import { toast } from "sonner";
 
 interface CommercialEditFormProps {
@@ -39,8 +40,8 @@ export function CommercialEditForm({
     decisionMakerRole: overrides.decisionMakerRole ?? "",
     commercialPriority: overrides.commercialPriority?.toString() ?? "",
     conversionProbability: overrides.conversionProbability?.toString() ?? "",
-    ticketMinUsd: overrides.ticketMinUsd?.toString() ?? "",
-    ticketMaxUsd: overrides.ticketMaxUsd?.toString() ?? "",
+    ticketMinClp: clpInputValue(overrides.ticketMinUsd),
+    ticketMaxClp: clpInputValue(overrides.ticketMaxUsd),
     firstConversationTopic: overrides.firstConversationTopic ?? "",
     nextAction: overrides.nextAction ?? "",
     nextActionDueDate: overrides.nextActionDueDate
@@ -59,8 +60,8 @@ export function CommercialEditForm({
       decisionMakerRole: overrides.decisionMakerRole ?? "",
       commercialPriority: overrides.commercialPriority?.toString() ?? "",
       conversionProbability: overrides.conversionProbability?.toString() ?? "",
-      ticketMinUsd: overrides.ticketMinUsd?.toString() ?? "",
-      ticketMaxUsd: overrides.ticketMaxUsd?.toString() ?? "",
+      ticketMinClp: clpInputValue(overrides.ticketMinUsd),
+      ticketMaxClp: clpInputValue(overrides.ticketMaxUsd),
       firstConversationTopic: overrides.firstConversationTopic ?? "",
       nextAction: overrides.nextAction ?? "",
       nextActionDueDate: overrides.nextActionDueDate
@@ -87,8 +88,8 @@ export function CommercialEditForm({
       conversionProbability: form.conversionProbability
         ? Number(form.conversionProbability)
         : null,
-      ticketMinUsd: form.ticketMinUsd ? Number(form.ticketMinUsd) : null,
-      ticketMaxUsd: form.ticketMaxUsd ? Number(form.ticketMaxUsd) : null,
+      ticketMinUsd: form.ticketMinClp ? clpToTicketStorage(Number(form.ticketMinClp)) : null,
+      ticketMaxUsd: form.ticketMaxClp ? clpToTicketStorage(Number(form.ticketMaxClp)) : null,
       firstConversationTopic: form.firstConversationTopic || null,
       nextAction: form.nextAction || null,
       nextActionDueDate: form.nextActionDueDate
@@ -145,10 +146,23 @@ export function CommercialEditForm({
             <Field label="Prob. conversión %" value={form.conversionProbability} onChange={(v) => set("conversionProbability", v)} type="number" />
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            <Field label="Ticket min USD" value={form.ticketMinUsd} onChange={(v) => set("ticketMinUsd", v)} type="number" />
-            <Field label="Ticket max USD" value={form.ticketMaxUsd} onChange={(v) => set("ticketMaxUsd", v)} type="number" />
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <Field
+              label="Ticket mín. (CLP)"
+              value={form.ticketMinClp}
+              onChange={(v) => set("ticketMinClp", v)}
+              type="number"
+              placeholder="3500000"
+            />
+            <Field
+              label="Ticket máx. (CLP)"
+              value={form.ticketMaxClp}
+              onChange={(v) => set("ticketMaxClp", v)}
+              type="number"
+              placeholder="8000000"
+            />
           </div>
+          <p className="text-xs text-muted-foreground">Montos en pesos chilenos (ej. 3.500.000)</p>
 
           <Field label="Primer tema de conversación" value={form.firstConversationTopic} onChange={(v) => set("firstConversationTopic", v)} multiline />
           <Field label="Próxima acción" value={form.nextAction} onChange={(v) => set("nextAction", v)} />
@@ -171,12 +185,14 @@ function Field({
   onChange,
   multiline,
   type = "text",
+  placeholder,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   multiline?: boolean;
   type?: string;
+  placeholder?: string;
 }) {
   return (
     <div>
@@ -184,7 +200,13 @@ function Field({
       {multiline ? (
         <Textarea value={value} onChange={(e) => onChange(e.target.value)} className="mt-1 min-h-[72px]" />
       ) : (
-        <Input type={type} value={value} onChange={(e) => onChange(e.target.value)} className="mt-1" />
+        <Input
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className="mt-1"
+        />
       )}
     </div>
   );
