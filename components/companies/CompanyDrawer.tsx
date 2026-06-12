@@ -16,7 +16,7 @@ import { CommercialBriefingView } from "@/components/commercial/CommercialBriefi
 import { CommercialEditForm } from "@/components/commercial/CommercialEditForm";
 import { FollowupTimeline } from "@/components/commercial/FollowupTimeline";
 import { useBanCompany, useUnbanCompany } from "@/hooks/useCompanies";
-import { useAnalyzeCompany } from "@/hooks/useAnalysis";
+import { useAnalyzeCompany, useCompanyAnalysis } from "@/hooks/useAnalysis";
 import { useCommercialTracking } from "@/hooks/useCommercial";
 import { formatDateTime } from "@/lib/utils";
 import type { Company } from "@/types";
@@ -32,6 +32,7 @@ export function CompanyDrawer({ company, open, onClose }: CompanyDrawerProps) {
   const [banReason, setBanReason] = useState("");
   const companyId = open && company ? company.id : null;
   const { data: commercial, isLoading, refetch } = useCommercialTracking(companyId);
+  const { data: analysisData } = useCompanyAnalysis(companyId);
   const analyzeCompany = useAnalyzeCompany();
   const banCompany = useBanCompany();
   const unbanCompany = useUnbanCompany();
@@ -170,7 +171,12 @@ export function CompanyDrawer({ company, open, onClose }: CompanyDrawerProps) {
                   </TabsContent>
 
                   <TabsContent value="ai">
-                    <CompanyAnalysis briefing={aiBriefing} isLoading={false} />
+                    <CompanyAnalysis
+                      briefing={aiBriefing}
+                      websiteIntel={analysisData?.websiteIntel}
+                      meta={analysisData?.meta}
+                      isLoading={false}
+                    />
                   </TabsContent>
 
                   <TabsContent value="seller" className="space-y-4">

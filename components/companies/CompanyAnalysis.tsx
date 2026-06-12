@@ -20,7 +20,8 @@ import { ScoreBadge } from "@/components/companies/ScoreBadge";
 import { CommercialPriorityBadge } from "@/components/companies/CommercialPriorityBadge";
 import { LoadingSkeleton } from "@/components/shared/LoadingSkeleton";
 import { formatTicketRange } from "@/lib/currency";
-import type { AnalysisMeta, PresalesBriefing, ServicePriority } from "@/types";
+import { WebsiteIntelCard } from "@/components/companies/WebsiteIntelCard";
+import type { AnalysisMeta, PresalesBriefing, ServicePriority, WebsiteIntel } from "@/types";
 
 const servicePriorityLabels: Record<ServicePriority, string> = {
   primary: "Principal",
@@ -38,6 +39,7 @@ interface CompanyAnalysisProps {
   briefing?: PresalesBriefing | null;
   meta?: AnalysisMeta;
   outreachMessage?: string | null;
+  websiteIntel?: WebsiteIntel | null;
   isLoading?: boolean;
 }
 
@@ -45,6 +47,7 @@ export function CompanyAnalysis({
   briefing,
   meta,
   outreachMessage,
+  websiteIntel,
   isLoading,
 }: CompanyAnalysisProps) {
   if (isLoading) return <LoadingSkeleton type="detail" rows={6} />;
@@ -64,6 +67,8 @@ export function CompanyAnalysis({
 
   return (
     <div className="space-y-4">
+      <WebsiteIntelCard intel={websiteIntel} scrapedAt={meta?.websiteScrapedAt} />
+
       {meta?.analyzedAt && (
         <p className="text-xs text-muted-foreground">
           Analizado {new Date(meta.analyzedAt).toLocaleString("es-CL")}

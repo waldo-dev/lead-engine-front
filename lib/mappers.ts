@@ -304,6 +304,35 @@ export function mapPresalesBriefing(raw: Record<string, unknown>): PresalesBrief
   };
 }
 
+function mapWebsiteIntel(raw: unknown): import("@/types").WebsiteIntel | null {
+  if (!raw || typeof raw !== "object") return null;
+  const o = raw as Record<string, unknown>;
+  if (typeof o.baseUrl !== "string" || typeof o.status !== "string") return null;
+  const pages = Array.isArray(o.pages)
+    ? o.pages.map((p) => {
+        const page = p as Record<string, unknown>;
+        return {
+          url: String(page.url ?? ""),
+          title: page.title != null ? String(page.title) : undefined,
+          excerpt: String(page.excerpt ?? ""),
+          status: page.status === "ok" ? "ok" as const : "error" as const,
+          error: page.error != null ? String(page.error) : undefined,
+        };
+      })
+    : [];
+  return {
+    baseUrl: String(o.baseUrl),
+    status: o.status as import("@/types").WebsiteIntel["status"],
+    scrapedAt: String(o.scrapedAt ?? ""),
+    title: o.title != null ? String(o.title) : undefined,
+    description: o.description != null ? String(o.description) : undefined,
+    pages,
+    keywords: Array.isArray(o.keywords) ? o.keywords.map(String) : undefined,
+    technologies: Array.isArray(o.technologies) ? o.technologies.map(String) : undefined,
+    error: o.error != null ? String(o.error) : undefined,
+  };
+}
+
 export function mapCompanyAnalysisResponse(
   raw: Record<string, unknown>
 ): CompanyAnalysisResponse {
@@ -328,9 +357,13 @@ export function mapCompanyAnalysisResponse(
     briefing,
     analysis: briefing,
     outreachMessage: raw.outreachMessage != null ? String(raw.outreachMessage) : null,
+    websiteIntel: mapWebsiteIntel(raw.websiteIntel),
     meta: {
       analyzedAt: meta.analyzedAt != null ? String(meta.analyzedAt) : null,
       modelName: meta.modelName != null ? String(meta.modelName) : null,
+      websiteScrapedAt: meta.websiteScrapedAt != null ? String(meta.websiteScrapedAt) : null,
+      websiteScrapeStatus:
+        meta.websiteScrapeStatus != null ? String(meta.websiteScrapeStatus) : null,
     },
   };
 }

@@ -78,7 +78,29 @@ export interface PresalesBriefing {
 export interface AnalysisMeta {
   analyzedAt: string | null;
   modelName: string | null;
+  websiteScrapedAt?: string | null;
+  websiteScrapeStatus?: string | null;
 }
+
+export type WebsitePageIntel = {
+  url: string;
+  title?: string;
+  excerpt: string;
+  status: "ok" | "error";
+  error?: string;
+};
+
+export type WebsiteIntel = {
+  baseUrl: string;
+  status: "success" | "partial" | "failed" | "skipped";
+  scrapedAt: string;
+  title?: string;
+  description?: string;
+  pages: WebsitePageIntel[];
+  keywords?: string[];
+  technologies?: string[];
+  error?: string;
+};
 
 export interface CompanyAnalysisResponse {
   company: {
@@ -95,6 +117,7 @@ export interface CompanyAnalysisResponse {
   briefing: PresalesBriefing | null;
   analysis: PresalesBriefing | null;
   outreachMessage: string | null;
+  websiteIntel?: WebsiteIntel | null;
   meta: AnalysisMeta;
 }
 
