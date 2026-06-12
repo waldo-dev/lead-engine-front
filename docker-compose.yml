@@ -5,8 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        # URL que el navegador usará para llamar al API (puerto 5008 en la VPS).
-        # Ejemplo: http://203.0.113.10:5008  o  https://api.tudominio.com
+        # URL pública del API (desde el navegador del usuario).
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:?Define NEXT_PUBLIC_API_URL en .env}
     ports:
       - "${FRONT_PORT:-3000}:3000"
