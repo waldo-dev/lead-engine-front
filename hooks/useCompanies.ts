@@ -12,11 +12,15 @@ export const companyKeys = {
   detail: (id: string) => [...companyKeys.details(), id] as const,
 };
 
-export function useCompanies(params?: CompaniesQueryParams) {
+export function useCompanies(
+  params?: CompaniesQueryParams,
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: companyKeys.list(params),
     queryFn: () => companyService.getAll(params),
     placeholderData: (prev) => prev,
+    enabled: options?.enabled ?? true,
   });
 }
 

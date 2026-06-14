@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   AlertTriangle,
   Building2,
+  ClipboardList,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -20,6 +21,7 @@ import { useUIStore } from "@/stores/ui.store";
 const mainNav = [
   { href: "/dashboard", label: "Resumen", icon: LayoutDashboard },
   { href: "/companies", label: "Empresas", icon: Building2 },
+  { href: "/assessments", label: "Diagnósticos", icon: ClipboardList },
   { href: "/processing", label: "Procesamiento", icon: Zap },
 ];
 

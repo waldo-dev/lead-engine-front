@@ -7,6 +7,7 @@ import {
   type ScrapingRunStart,
   type ScrapingRunStatus,
 } from "@/services/scraping.service";
+import { useAuthSession } from "@/stores/auth.store";
 
 export const scrapingKeys = {
   all: ["scraping"] as const,
@@ -22,10 +23,12 @@ type ScrapingConfigOptions = {
 };
 
 export function useScrapingConfig(options?: ScrapingConfigOptions) {
+  const { isReady, isAuthenticated } = useAuthSession();
+
   return useQuery({
     queryKey: scrapingKeys.config(),
     queryFn: () => scrapingService.getConfig(),
-    enabled: options?.enabled ?? true,
+    enabled: isReady && isAuthenticated && (options?.enabled ?? true),
     staleTime: 60_000,
   });
 }
@@ -36,10 +39,13 @@ type ScrapingStatsOptions = {
 };
 
 export function useScrapingStats(options?: ScrapingStatsOptions) {
+  const { isReady, isAuthenticated } = useAuthSession();
+
   return useQuery({
     queryKey: scrapingKeys.stats(),
     queryFn: () => scrapingService.getStats(),
     staleTime: 30_000,
+    enabled: isReady && isAuthenticated,
     refetchInterval: options?.pollWhileActive
       ? (query) => (query.state.data?.activeRun?.status === "running" ? 3000 : false)
       : false,
@@ -57,10 +63,13 @@ export function useScrapingRun(runId: string | null) {
 }
 
 export function useDashboardMetrics() {
+  const { isReady, isAuthenticated } = useAuthSession();
+
   return useQuery({
     queryKey: scrapingKeys.dashboard(),
     queryFn: () => scrapingService.getDashboardMetrics(),
-    refetchInterval: 30000,
+    enabled: isReady && isAuthenticated,
+    refetchInterval: 30_000,
   });
 }
 
