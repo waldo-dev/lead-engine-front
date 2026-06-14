@@ -67,6 +67,8 @@ export default function SettingsPage() {
           <Separator />
           <p>GET/PATCH /commercial/:id</p>
           <p>GET/POST /commercial/:id/followups</p>
+          <Separator />
+          <p>GET /gantt/example · POST /gantt/generate · POST /gantt/plan</p>
         </CardContent>
       </Card>
     </div>

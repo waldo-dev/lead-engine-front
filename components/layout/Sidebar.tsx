@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   AlertTriangle,
   Building2,
+  ChartGantt,
   ClipboardList,
   LayoutDashboard,
   LogOut,
@@ -22,6 +23,7 @@ const mainNav = [
   { href: "/dashboard", label: "Resumen", icon: LayoutDashboard },
   { href: "/companies", label: "Empresas", icon: Building2 },
   { href: "/assessments", label: "Diagnósticos", icon: ClipboardList },
+  { href: "/gantt", label: "Carta Gantt", icon: ChartGantt },
   { href: "/processing", label: "Procesamiento", icon: Zap },
 ];
 
